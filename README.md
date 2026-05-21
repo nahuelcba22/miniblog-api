@@ -23,8 +23,7 @@ El proyecto implementa operaciones CRUD, validaciones básicas, pruebas unitaria
 ## 1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
-cd miniblog-api
+git clone https://github.com/nahuelcba22/miniblog-api
 ```
 
 ---
