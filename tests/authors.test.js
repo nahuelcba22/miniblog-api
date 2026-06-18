@@ -90,3 +90,15 @@ test('POST /api/authors should validate required fields', async () => {
 
   assert.strictEqual(res.statusCode, 400);
 });
+test('POST /api/posts should create post', async () => {
+  const res = await request(app)
+    .post('/api/posts')
+    .send({
+      title: 'Post de prueba',
+      content: 'Contenido de prueba',
+      author_id: 2
+    });
+
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.title, 'Post de prueba');
+});
