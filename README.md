@@ -2,7 +2,21 @@
 
 API REST desarrollada con Node.js, Express y PostgreSQL para gestionar authors y posts.
 
-El proyecto implementa operaciones CRUD, validaciones básicas, pruebas unitarias mínimas y documentación OpenAPI.
+El proyecto implementa operaciones CRUD completas, validaciones básicas, pruebas automatizadas y documentación OpenAPI.
+
+---
+
+# API desplegada
+
+URL pública:
+
+https://miniblog-api-production-9835.up.railway.app
+
+Health Check:
+
+```bash
+curl https://miniblog-api-production-9835.up.railway.app
+```
 
 ---
 
@@ -15,15 +29,17 @@ El proyecto implementa operaciones CRUD, validaciones básicas, pruebas unitaria
 * dotenv
 * Vitest
 * Supertest
+* OpenAPI
 
 ---
 
 # Instalación local
 
-## 1. Clonar el repositorio
+## 1. Clonar repositorio
 
 ```bash
-git clone https://github.com/nahuelcba22/miniblog-api
+git clone https://github.com/nahuelcba22/miniblog-api.git
+cd miniblog-api
 ```
 
 ---
@@ -38,12 +54,13 @@ npm install
 
 ## 3. Configurar variables de entorno
 
-Crear archivo `.env` basado en `.env.example`
+Crear un archivo `.env` basado en `.env.example`.
 
-## .env.example
+### .env.example
 
 ```env
 PORT=3000
+
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=miniblog
@@ -53,7 +70,7 @@ DB_PASSWORD=tu_password
 
 ---
 
-# Configuración de PostgreSQL
+# Configuración PostgreSQL
 
 ## Crear base de datos
 
@@ -63,9 +80,7 @@ CREATE DATABASE miniblog;
 
 ---
 
-## Ejecutar scripts SQL
-
-Ejecutar los scripts de creación de tablas y seed.
+## Ejecutar script SQL
 
 ```sql
 CREATE TABLE authors (
@@ -83,7 +98,9 @@ CREATE TABLE posts (
   author_id INTEGER NOT NULL,
   published BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
-  FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE
+  FOREIGN KEY (author_id)
+  REFERENCES authors(id)
+  ON DELETE CASCADE
 );
 ```
 
@@ -103,7 +120,7 @@ INSERT INTO posts (title, content, author_id, published) VALUES
 
 ---
 
-# Ejecutar el servidor
+# Ejecutar servidor
 
 Modo desarrollo:
 
@@ -117,7 +134,7 @@ Modo producción:
 npm start
 ```
 
-Servidor disponible en:
+Servidor local:
 
 ```txt
 http://localhost:3000
@@ -129,26 +146,72 @@ http://localhost:3000
 
 ## Authors
 
-| Método | Endpoint         | Descripción               |
-| ------ | ---------------- | ------------------------- |
-| GET    | /api/authors     | Obtener todos los authors |
-| GET    | /api/authors/:id | Obtener author por ID     |
-| POST   | /api/authors     | Crear author              |
-| PUT    | /api/authors/:id | Actualizar author         |
-| DELETE | /api/authors/:id | Eliminar author           |
+| Método | Endpoint | Descripción |
+|----------|----------|----------|
+| GET | /api/authors | Obtener todos los authors |
+| GET | /api/authors/:id | Obtener author por ID |
+| POST | /api/authors | Crear author |
+| PUT | /api/authors/:id | Actualizar author |
+| DELETE | /api/authors/:id | Eliminar author |
 
 ---
 
 ## Posts
 
-| Método | Endpoint                    | Descripción                          |
-| ------ | --------------------------- | ------------------------------------ |
-| GET    | /api/posts                  | Obtener todos los posts              |
-| GET    | /api/posts/:id              | Obtener post por ID                  |
-| GET    | /api/posts/author/:authorId | Obtener posts con detalle del author |
-| POST   | /api/posts                  | Crear post                           |
-| PUT    | /api/posts/:id              | Actualizar post                      |
-| DELETE | /api/posts/:id              | Eliminar post                        |
+| Método | Endpoint | Descripción |
+|----------|----------|----------|
+| GET | /api/posts | Obtener todos los posts |
+| GET | /api/posts/:id | Obtener post por ID |
+| GET | /api/posts/author/:authorId | Obtener posts de un author |
+| POST | /api/posts | Crear post |
+| PUT | /api/posts/:id | Actualizar post |
+| DELETE | /api/posts/:id | Eliminar post |
+
+---
+
+# Ejemplos de uso
+
+## Obtener todos los authors
+
+```bash
+curl https://miniblog-api-production-9835.up.railway.app/api/authors
+```
+
+---
+
+## Obtener un author por ID
+
+```bash
+curl https://miniblog-api-production-9835.up.railway.app/api/authors/1
+```
+
+---
+
+## Crear author
+
+```bash
+curl -X POST https://miniblog-api-production-9835.up.railway.app/api/authors \
+-H "Content-Type: application/json" \
+-d "{\"name\":\"Juan Perez\",\"email\":\"juan@test.com\",\"bio\":\"Backend Developer\"}"
+```
+
+---
+
+## Obtener todos los posts
+
+```bash
+curl https://miniblog-api-production-9835.up.railway.app/api/posts
+```
+
+---
+
+## Crear post
+
+```bash
+curl -X POST https://miniblog-api-production-9835.up.railway.app/api/posts \
+-H "Content-Type: application/json" \
+-d "{\"title\":\"Nuevo Post\",\"content\":\"Contenido de prueba\",\"author_id\":1}"
+```
 
 ---
 
@@ -174,6 +237,17 @@ http://localhost:3000
 npm test
 ```
 
+Tests implementados:
+
+* Obtener authors
+* Obtener author inexistente
+* Crear author
+* Validación de author
+* Obtener posts
+* Obtener post inexistente
+* Validación de post
+* Obtener posts por author
+
 ---
 
 # Documentación OpenAPI
@@ -184,7 +258,7 @@ Archivo incluido:
 openapi.yaml
 ```
 
-La documentación describe los endpoints principales de la API.
+Describe los endpoints principales de la API, parámetros y respuestas.
 
 ---
 
@@ -193,11 +267,14 @@ La documentación describe los endpoints principales de la API.
 ## Pasos básicos
 
 1. Crear proyecto en Railway
-2. Conectar repositorio GitHub
-3. Configurar variables de entorno
-4. Deploy automático
+2. Crear base PostgreSQL
+3. Conectar repositorio GitHub
+4. Configurar variables de entorno
+5. Realizar deploy automático
 
-## Variables necesarias
+---
+
+## Variables de entorno
 
 ```env
 PORT=
@@ -210,21 +287,37 @@ DB_PASSWORD=
 
 ---
 
+## URL pública
+
+```txt
+https://miniblog-api-production-9835.up.railway.app
+```
+
+---
+
 # Uso de Inteligencia Artificial
 
-Durante el desarrollo se utilizó inteligencia artificial como apoyo para:
+Durante el desarrollo se utilizó inteligencia artificial como herramienta de apoyo para:
 
 * Resolución de errores
-* Revisión de endpoints
+* Revisión de consultas SQL
 * Validaciones básicas
-* Organización del README
+* Organización del proyecto
 * Generación de ejemplos CRUD
-* Correcciones de SQL y Express
+* Revisión de documentación
+* Corrección de errores en Express y PostgreSQL
 
-Toda la integración y pruebas fueron realizadas manualmente por el estudiante.
+Toda la implementación, integración, pruebas y despliegue fueron realizados manualmente por el estudiante.
 
 ---
 
 # Autor
 
-Proyecto desarrollado para práctica académica de backend con Node.js + PostgreSQL.
+Proyecto desarrollado como Proyecto Integrador Backend utilizando:
+
+* Node.js
+* Express
+* PostgreSQL
+* Railway
+
+Autor: Nahuel Córdoba
